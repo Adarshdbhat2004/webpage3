@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Contact Us - SAMPUTA</title>
+
+<style>
+body{
+  font-family:Arial,sans-serif;
+  background:#f0f6ff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+  margin:0;
+}
+.contact-box{
+  width:100%;
+  max-width:400px;
+  background:white;
+  padding:25px;
+  border-radius:14px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+h2{text-align:center;color:#1e3a8a;margin-bottom:20px;}
+label{display:block;margin-top:12px;font-weight:600;}
+input,textarea,button{
+  width:100%;
+  margin-top:6px;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #dbeafe;
+  font-size:14px;
+}
+textarea{
+  min-height:120px;
+  resize:vertical;
+}
+button{
+  background:#25D366;
+  color:white;
+  font-size:16px;
+  border:none;
+  margin-top:16px;
+  cursor:pointer;
+}
+button:disabled{
+  background:#93c5fd;
+  cursor:not-allowed;
+}
+</style>
+</head>
+
+<body>
+<div class="contact-box">
+<h2>Contact Us</h2>
+
+<label>Your Name</label>
+<input id="name" placeholder="Enter your name">
+
+<label>Your WhatsApp Number</label>
+<input id="phone" placeholder="10 digit number" maxlength="10">
+
+<label>Message</label>
+<textarea id="message" placeholder="Enter your message or feedback"></textarea>
+
+<button onclick="sendWhatsApp()">Send via WhatsApp</button>
+</div>
+
+<script>
+function sendWhatsApp(){
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const message = document.getElementById("message").value.trim();
+
+  if(!name || !phone || !message){
+    alert("Please fill all fields");
+    return;
+  }
+  if(!/^\d{10}$/.test(phone)){
+    alert("Phone number must be 10 digits");
+    return;
+  }
+
+  // Admin WhatsApp number (replace with your number)
+  const adminNumber = "7483 586 631"; // Use country code without '+'
+
+  // Encode message
+  const text = encodeURIComponent(`Name: ${name}\nPhone: ${phone}\nMessage: ${message}`);
+
+  // Open WhatsApp chat
+  window.open(`https://wa.me/${adminNumber}?text=${text}`, "_blank");
+}
+</script>
+
+</body>
+</html>

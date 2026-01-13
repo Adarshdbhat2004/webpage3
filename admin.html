@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SAMPUTA – Admin Panel</title>
+
+<style>
+body{font-family:Arial,sans-serif;background:#f1f5f9;margin:0;}
+header{background:#1e40af;color:#fff;padding:16px;text-align:center;}
+.posts{max-width:1000px;margin:20px auto;padding:0 15px;display:grid;gap:15px;}
+.post{background:#fff;padding:15px;border-radius:10px;box-shadow:0 4px 12px rgba(0,0,0,.08);}
+.post h3{margin:0 0 6px;}
+.post p{margin:4px 0;font-size:14px;}
+.actions{display:flex;gap:10px;margin-top:12px;}
+button{flex:1;padding:10px;border:none;border-radius:6px;font-weight:600;cursor:pointer;}
+.approve{background:#16a34a;color:#fff;}
+.reject{background:#dc2626;color:#fff;}
+
+.deleteAll{
+  background:#7f1d1d;
+  color:#fff;
+  margin:15px;
+  padding:12px;
+  border-radius:8px;
+  font-weight:700;
+  width:calc(100% - 30px);
+}
+.adBtn{
+  background:#0f766e;
+  color:#fff;
+  margin:15px;
+  padding:12px;
+  border-radius:8px;
+  font-weight:700;
+  width:calc(100% - 30px);
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h2>SAMPUTA – Admin Panel</h2>
+  <p>Approve or Reject Messages</p>
+</header>
+
+<!-- 🔴 DELETE ALL BUTTON (UNCHANGED) -->
+<button class="deleteAll" onclick="deleteAllMessages()">
+🗑 DELETE ALL MESSAGES
+</button>
+
+<!-- 📢 UPLOAD ADVERTISEMENT BUTTON (NEW) -->
+<button class="adBtn" onclick="goToAds()">
+📢 UPLOAD ADVERTISEMENT
+</button>
+
+<div class="posts" id="posts"></div>
+
+<script>
+// 🔹 FETCH API (Sheet1)
+const FETCH_API =
+"https://script.google.com/macros/s/AKfycbxJMJ1-sDl64lzFBmZmvB854SlTbFHP4FgeJF7HIdfU-IDt0_9e_g_pRaf-Ldb8jRpN/exec";
+
+// 🔹 APPROVE API (Sheet2)
+const APPROVE_API =
+"https://script.google.com/macros/s/AKfycbxNYxw6oesvhX42cGzeDxVIRmhCxt0krK0EJpW1bcBOC2Jd49piDET9RQwOINirwfYhsA/exec";
+
+// Fetch messages
+fetch(FETCH_API)
+  .then(res => res.json())
+  .then(data => renderPosts(data.reverse()));
+
+function renderPosts(data){
+  const posts = document.getElementById("posts");
+  posts.innerHTML = "";
+
+  if(data.length === 0){
+    posts.innerHTML = "<p style='text-align:center'>No messages found</p>";
+    return;
+  }
+
+  data.forEach(item=>{
+    const div = document.createElement("div");
+    div.className = "post";
+
+    div.innerHTML = `
+      <h3>${item.title}</h3>
+      <p><b>Name:</b> ${item.name}</p>
+      <p><b>Phone:</b> ${item.phone}</p>
+      <p><b>Category:</b> ${item.category}</p>
+      <p><b>Subcategory:</b> ${item.subcategory}</p>
+      <p><b>Message:</b> ${item.message}</p>
+
+      <div class="actions">
+        <button class="approve">✔ Approve</button>
+        <button class="reject">✖ Reject</button>
+      </div>
+    `;
+
+    posts.appendChild(div);
+
+    // ✅ APPROVE → STORE IN SHEET2
+    div.querySelector(".approve").onclick = () => {
+      const fd = new URLSearchParams();
+      fd.append("name", item.name);
+      fd.append("phone", item.phone);
+      fd.append("category", item.category);
+      fd.append("subcategory", item.subcategory);
+      fd.append("title", item.title);
+      fd.append("message", item.message);
+
+      fetch(APPROVE_API, {
+        method: "POST",
+        body: fd
+      })
+      .then(res => res.json())
+      .then(resp => {
+        if(resp.status === "success"){
+          alert("Approved & stored in Sheet2");
+          div.remove();
+        } else {
+          alert("Approval failed");
+        }
+      });
+    };
+
+    // ❌ REJECT → UI ONLY
+    div.querySelector(".reject").onclick = () => {
+      if(confirm("Reject this message?")){
+        div.remove();
+      }
+    };
+  });
+}
+
+// 🔴 DELETE ALL FROM SHEET1
+function deleteAllMessages(){
+  if(!confirm("Are you sure you want to delete ALL messages?")) return;
+
+  fetch(FETCH_API, {
+    method: "POST",
+    body: new URLSearchParams({ action: "deleteAll" })
+  })
+  .then(res => res.json())
+  .then(resp => {
+    if(resp.status === "success"){
+      alert("All messages deleted");
+      document.getElementById("posts").innerHTML = "";
+    }
+  });
+}
+
+// 📢 GO TO ADS PAGE (NEW)
+function goToAds(){
+  window.location.href = "ads.html";
+}
+</script>
+
+</body>
+</html>

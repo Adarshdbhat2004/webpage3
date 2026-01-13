@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SAMPUTA</title>
+
+<style>
+body{margin:0;font-family:Arial,sans-serif;background:#f1f6ff}
+
+/* WELCOME */
+#welcomeOverlay{
+  position:fixed;inset:0;background:white;
+  display:flex;flex-direction:column;
+  justify-content:center;align-items:center;
+  z-index:9999;
+}
+#welcomeOverlay img{width:350px;max-width:80%;border-radius:14px}
+#welcomeOverlay p{margin-top:20px;font-size:18px;font-weight:600;text-align:center;padding:0 20px}
+#loadingSpinner{
+  margin-top:20px;border:6px solid #eee;border-top:6px solid #2563eb;
+  border-radius:50%;width:40px;height:40px;animation:spin 1s linear infinite
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* HEADER */
+header{
+  background:linear-gradient(135deg,#2563eb,#1e40af);
+  color:white;padding:20px 20px 35px;position:relative
+}
+.header-title{display:flex;justify-content:center;align-items:center;gap:10px}
+.header-title img{height:45px;background:white;padding:4px;border-radius:8px}
+.location,.about,.contact{
+  position:absolute;top:15px;background:rgba(255,255,255,.15);
+  padding:6px 12px;border-radius:20px;font-weight:600
+}
+.location{left:20px}.about{left:110px}.contact{left:220px}
+.about a,.contact a{color:white;text-decoration:none}
+
+/* UPLOAD + ADMIN */
+.upload{
+  position:absolute;top:15px;right:20px;
+  text-align:right;
+}
+.upload a{display:block;margin-bottom:6px}
+.upload button{
+  padding:10px 14px;
+  border-radius:12px;
+  font-weight:600;
+}
+.admin-btn{
+  width:42px;height:42px;padding:0;
+  border-radius:8px;font-size:14px;
+}
+
+/* CATEGORIES */
+.categories{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:14px;
+  max-width:1200px;
+  margin:40px auto 20px;
+  padding:0 15px
+}
+.card{
+  background:white;padding:16px;
+  text-align:center;border-radius:16px;
+  cursor:pointer;
+  box-shadow:0 6px 16px rgba(0,0,0,.08);
+  font-weight:600
+}
+.card:hover{background:#eff6ff}
+
+/* MAIN */
+.main{
+  display:flex;
+  flex-direction:column;
+  gap:15px;
+  max-width:1300px;
+  margin:auto;
+  padding:15px
+}
+
+/* FILTER */
+.sub-filter{display:none;margin-bottom:10px}
+.sub-filter select{width:100%;padding:10px;border-radius:10px}
+
+/* POSTS */
+.posts{display:grid;gap:15px}
+.post{
+  background:white;
+  border-radius:14px;
+  box-shadow:0 6px 16px rgba(0,0,0,.08)
+}
+.post-content{padding:14px}
+
+/* ADS */
+.ad-box{
+  background:white;
+  border-radius:14px;
+  box-shadow:0 6px 16px rgba(0,0,0,.08);
+  margin-bottom:15px;
+  padding:10px
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  background:#1e3a8a;
+  color:#e0e7ff;
+  padding:12px
+}
+
+/* VOTING */
+.vote-box{margin-top:12px}
+.vote-btn{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:14px 22px;
+  font-size:17px;
+  font-weight:600;
+  border-radius:30px;
+  border:none;
+  cursor:pointer;
+  box-shadow:0 4px 10px rgba(0,0,0,.15)
+}
+.vote-btn span{
+  background:white;
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:15px;
+  color:#000
+}
+.vote-btn:disabled{
+  opacity:.6;
+  cursor:not-allowed
+}
+.vote-agree{
+  background:linear-gradient(135deg,#22c55e,#16a34a);
+  color:white
+}
+.vote-total{
+  margin-top:10px;
+  font-size:18px;
+  font-weight:700;
+  color:#1f2937;
+}
+
+/* MOBILE */
+@media (max-width:768px){
+  .upload{
+    position:static;
+    text-align:center;
+    margin-top:10px
+  }
+  .upload a{
+    display:inline-block;
+    margin:4px
+  }
+}
+</style>
+</head>
+
+<body>
+
+<div id="welcomeOverlay">
+  <img src="WELCOMEPAGE.png">
+  <p>ಈ ಸೈಟ್ ಕೇವಲ ಜನರನ್ನು ಪರಸ್ಪರ ಸಂಪರ್ಕ ಗೊಳಿಸುವ ಪ್ಲಾಟ್ಫಾರ್ಮ್ ಆಗಿದೆ...</p>
+  <div id="loadingSpinner"></div>
+</div>
+
+<header>
+  <div class="location">📍 Sirsi</div>
+  <div class="about"><a href="about.html">ℹ About</a></div>
+  <div class="contact"><a href="contact.html">📩 Contact</a></div>
+
+  <div class="header-title">
+    <img src="samputalogo.png">
+    <h1>SAMPUTA.COM</h1>
+  </div>
+
+  <div class="upload">
+    <a href="addemessege.html"><button>➕ Upload</button></a>
+    <a href="login.html"><button class="admin-btn">🔒</button></a>
+  </div>
+</header>
+
+<section class="categories">
+  <div class="card" onclick="loadSub('Sales')">🛒 Sales</div>
+  <div class="card" onclick="loadSub('Rent')">🏠 Rent</div>
+  <div class="card" onclick="loadSub('Services')">🛠 Services</div>
+  <div class="card" onclick="showMain('Local News')">📰 Local News</div>
+  <div class="card" onclick="showMain('Public Voice')">🗣 Public Voice</div>
+  <div class="card" onclick="showMain('Jobs')">💼 Jobs</div>
+  <div class="card" onclick="showMain('Information')">ℹ Information</div>
+  <div class="card" onclick="showMain('Request')">🙋 Request</div>
+</section>
+
+<div class="main">
+  <div class="ads" id="ads"></div>
+  <div>
+    <div class="sub-filter" id="subBox">
+      <select id="subSelect" onchange="applySub()"></select>
+    </div>
+    <div class="posts" id="posts"></div>
+  </div>
+</div>
+
+<footer>© 2025 SAMPUTA</footer>
+
+<script>
+const POSTS_API="https://script.google.com/macros/s/AKfycbwavZ7TYpQJRJvm_aSzEKsLFBNx0EdeIlM9ZXlF5j7DCIRHAJL1Z4hTuZ_L2Cqx6r84yg/exec";
+const ADS_API="https://script.google.com/macros/s/AKfycbz6kwv0MLJbea2ZpKOxLg99TRp_rkUMAGUtgsckEVHBBxWn9j6xSDbgzbfsrFQJj3px/exec";
+const VOTE_API="https://script.google.com/macros/s/AKfycbz_1YOYmM717AYDIViLyF2IIH9ECf4ZiZTDVempkr6nX_nNqETS5rKlAfDLspvnsbxd/exec";
+
+let allData=[],currentMain="";
+const subCats={
+ Sales:["Bikes","Cars","Electronics","Others"],
+ Rent:["Home","Shop","Others"],
+ Services:["Electrician","Plumber","Taxi","Others"]
+};
+
+function fetchData(){
+  fetch(POSTS_API).then(r=>r.json()).then(d=>{
+    allData=d.reverse();
+    showDefault();
+    fetchVotes();
+  });
+  fetch(ADS_API).then(r=>r.json()).then(showAds);
+}
+
+function showDefault(){
+  subBox.style.display="none";
+  render(allData.filter(x=>["Local News","Request","Public Voice"].includes(x.category)));
+}
+
+function showMain(cat){
+  subBox.style.display="none";
+  render(allData.filter(x=>x.category===cat));
+}
+
+function loadSub(main){
+  currentMain=main;
+  subSelect.innerHTML="<option>Select</option>";
+  subCats[main].forEach(s=>subSelect.innerHTML+=`<option>${s}</option>`);
+  subBox.style.display="block";
+  render(allData.filter(x=>x.category===main));
+}
+
+function applySub(){
+  render(allData.filter(x=>x.category===currentMain && x.subcategory===subSelect.value));
+}
+
+/* ✅ UPDATED ONLY HERE */
+function render(data){
+  posts.innerHTML="";
+  data.forEach(i=>{
+    const voted=localStorage.getItem("voted_"+i.id);
+    posts.innerHTML+=`
+    <div class="post">
+      <div class="post-content">
+        <b>${i.title}</b>
+        <p>${i.message}</p>
+
+        ${i.category==="Public Voice"?`
+        <div class="vote-box">
+          <button class="vote-btn vote-agree"
+            id="btn-${i.id}"
+            onclick="votePost('${i.id}')"
+            ${voted?"disabled":""}>
+            <span id="text-${i.id}">
+              ${voted?"✔ Voted":"👍 Agree"}
+            </span>
+            <span id="agree-${i.id}">0</span>
+          </button>
+        </div>
+        <div class="vote-total">
+          👍 Agree: <span id="total-agree-${i.id}">0</span>
+        </div>
+        `:""}
+      </div>
+    </div>`;
+  });
+}
+
+function votePost(postId){
+  if(localStorage.getItem("voted_"+postId)) return;
+
+  const btn=document.getElementById("btn-"+postId);
+  const txt=document.getElementById("text-"+postId);
+
+  btn.disabled=true;
+  txt.innerText="Voting...";
+
+  fetch(`${VOTE_API}?postId=${postId}&type=agree`)
+    .then(()=>{
+      localStorage.setItem("voted_"+postId,"yes");
+      txt.innerText="✔ Voted";
+      fetchVotes();
+    })
+    .catch(()=>{
+      btn.disabled=false;
+      txt.innerText="👍 Agree";
+    });
+}
+
+function fetchVotes(){
+  fetch(VOTE_API+"?action=get")
+    .then(r=>r.json())
+    .then(data=>{
+      data.forEach(v=>{
+        const a=document.getElementById("agree-"+v.postId);
+        const t=document.getElementById("total-agree-"+v.postId);
+        if(a) a.innerText=v.agree;
+        if(t) t.innerText=v.agree;
+      });
+    });
+}
+
+function showAds(a){
+  ads.innerHTML="";
+  a.forEach(x=>{
+    ads.innerHTML+=`<div class="ad-box"><b>${x.title}</b><p>${x.message}</p></div>`;
+  });
+}
+
+window.onload=()=>setTimeout(()=>welcomeOverlay.style.display="none",5000);
+fetchData();
+setInterval(fetchData,30000);
+</script>
+
+</body>
+</html>

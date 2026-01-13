@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UPLOAD MESSAGE</title>
+
+<style>
+body{
+  font-family:Arial,sans-serif;
+  background:#f0f6ff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+.admin-box{
+  width:100%;
+  max-width:420px;
+  background:white;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+h2{text-align:center;color:#1e3a8a;}
+label{margin-top:12px;display:block;font-weight:600;}
+input,textarea,select,button{
+  width:100%;
+  margin-top:6px;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #dbeafe;
+}
+textarea{
+  min-height:130px;
+  resize:vertical;
+}
+button{
+  background:#2563eb;
+  color:white;
+  font-size:16px;
+  border:none;
+  margin-top:16px;
+  cursor:pointer;
+}
+button:disabled{
+  background:#93c5fd;
+  cursor:not-allowed;
+}
+/* Note text */
+.note{
+  margin-top:12px;
+  font-size:14px;
+  color:#1e3a8a;
+  text-align:center;
+}
+</style>
+</head>
+
+<body>
+<div class="admin-box">
+<h2>UPLOAD MESSAGE</h2>
+
+<label>Name</label>
+<input id="name" placeholder="Enter your name">
+
+<label>Phone Number</label>
+<input id="phone" placeholder="10 digit phone number" maxlength="10">
+
+<label>Main Category</label>
+<select id="category" onchange="loadSubCategory()">
+  <option value="">Select category</option>
+  <option>Sales</option>
+  <option>Rent</option>
+  <option>Services</option>
+  <option>Public Voice</option>
+  <option>Jobs</option>
+  <option>Local News</option>
+  
+  <option>Information</option>
+  <option>Request</option>
+</select>
+
+<label>Sub Category</label>
+<select id="subcategory">
+  <option value="">Select sub category</option>
+</select>
+
+<label>Title</label>
+<input id="title" placeholder="Enter title">
+
+<label>Message</label>
+<textarea id="message" placeholder="Enter full message"></textarea>
+
+<button id="submitBtn" onclick="submitPost()">UPLOAD</button>
+
+<div class="note">
+  ⚠ Your message will be sent to the admin and will appear on SAMPUTA only after approval.
+</div>
+</div>
+
+<script>
+const API_URL =
+"https://script.google.com/macros/s/AKfycbxJMJ1-sDl64lzFBmZmvB854SlTbFHP4FgeJF7HIdfU-IDt0_9e_g_pRaf-Ldb8jRpN/exec";
+
+const subCategories = {
+Sales:["Bikes","Camera","Cars","Electronics","Furniture","Home Needs","home products","Land / Site","Laptop","Mobile","Other Vehicles","Pets","Others"],
+Rent:["Commercial Space","Convention Hall","Home","Homestay","Hotel","Resort","Shop","Others"],
+Services:["Ambulance","Bar Bender","Beautician / Mehndi Artist","Carpenter","Catering","coock","Commercial Vehicle","Electrician","Gavdi","General Labour","JCB / Hitachi","Mechanic","Painter","Personal Driver","Photographer","Plumber","Shamiyana","Taxi","Tiles Fitting","Welder","Others"]
+
+};
+
+function loadSubCategory(){
+  const cat = document.getElementById("category").value;
+  const sub = document.getElementById("subcategory");
+  sub.innerHTML = '<option value="">Select sub category</option>';
+
+  if(subCategories[cat]){
+    subCategories[cat].forEach(item=>{
+      const opt = document.createElement("option");
+      opt.textContent = item;
+      opt.value = item;
+      sub.appendChild(opt);
+    });
+  }
+}
+
+function submitPost(){
+  const btn = document.getElementById("submitBtn");
+
+  const name = document.getElementById("name").value.trim();
+  const phone = document.getElementById("phone").value.trim();
+  const category = document.getElementById("category").value;
+  const subcategory = document.getElementById("subcategory").value;
+  const title = document.getElementById("title").value.trim();
+  const message = document.getElementById("message").value.trim();
+
+  if(!/^\d{10}$/.test(phone)){
+    alert("Phone number must be exactly 10 digits");
+    return;
+  }
+
+  if(!name || !category || !title || !message){
+    alert("Please fill all required fields");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerText = "Uploading...";
+
+  const fd = new FormData();
+  fd.append("name", name);
+  fd.append("phone", phone);
+  fd.append("category", category);
+  fd.append("subcategory", subcategory);
+  fd.append("title", title);
+  fd.append("message", message);
+
+  fetch(API_URL,{ method:"POST", body:fd })
+    .then(r=>r.text())
+    .then(()=>{
+      alert("Message uploaded successfully");
+      document.querySelectorAll("input,textarea,select").forEach(e=>e.value="");
+    })
+    .finally(()=>{
+      btn.disabled = false;
+      btn.innerText = "UPLOAD";
+    });
+}
+</script>
+
+</body>
+</html>

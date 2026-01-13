@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>UPLOAD ADVERTISEMENT</title>
+
+<style>
+body{
+  font-family:Arial,sans-serif;
+  background:#f0f6ff;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+.box{
+  width:100%;
+  max-width:420px;
+  background:white;
+  padding:20px;
+  border-radius:14px;
+  box-shadow:0 10px 25px rgba(0,0,0,0.1);
+}
+h2{text-align:center;color:#1e3a8a;}
+label{margin-top:12px;display:block;font-weight:600;}
+input,textarea,button{
+  width:100%;
+  margin-top:6px;
+  padding:10px;
+  border-radius:8px;
+  border:1px solid #dbeafe;
+}
+textarea{
+  min-height:120px;
+}
+button{
+  background:#2563eb;
+  color:white;
+  font-size:16px;
+  border:none;
+  margin-top:16px;
+  cursor:pointer;
+}
+button:disabled{
+  background:#93c5fd;
+  cursor:not-allowed;
+}
+</style>
+</head>
+
+<body>
+<div class="box">
+<h2>UPLOAD ADVERTISEMENT</h2>
+
+<label>Advertisement Title</label>
+<input id="title" name="adTitle" placeholder="Enter advertisement title">
+
+<label>Advertisement Message</label>
+<textarea id="message" name="adMessage" placeholder="Enter advertisement message"></textarea>
+
+<button id="btn" onclick="uploadAd()">UPLOAD</button>
+</div>
+
+<script>
+const API_URL = "https://script.google.com/macros/s/AKfycbwfm65Hxnrj9OmWoIlxD8z9YcKeOHShm45uCUfYNkIZH1hYaoJahRNpNu66KWp65mfk/exec";
+
+function uploadAd() {
+  const btn = document.getElementById("btn");
+  const title = document.getElementById("title").value.trim();
+  const message = document.getElementById("message").value.trim();
+
+  if(!title || !message){
+    alert("Please fill all fields");
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerText = "Uploading...";
+
+  // ✅ Use FormData to send data as application/x-www-form-urlencoded
+  const formData = new FormData();
+  formData.append("adTitle", title);
+  formData.append("adMessage", message);
+
+  fetch(API_URL, {
+    method: "POST",
+    body: formData
+  })
+  .then(res => res.text())
+  .then(res => {
+    if(res.includes("SUCCESS")){
+      alert("Advertisement uploaded successfully");
+      document.getElementById("title").value = "";
+      document.getElementById("message").value = "";
+    } else {
+      alert("Error: " + res);
+    }
+  })
+  .catch(err => alert("Error: " + err.message))
+  .finally(()=> {
+    btn.disabled = false;
+    btn.innerText = "UPLOAD";
+  });
+}
+</script>
+
+</body>
+</html>
